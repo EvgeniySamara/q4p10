@@ -47,6 +47,8 @@
 # Используйте цикл для моделирования жизни человека в течение 365 дней. Этот цикл
 # должен вызывать метод live_day каждый день и проверять, выжил ли человек.
 
+from random import randint
+
 class Human:
     '''
     Человек может (должны быть такие методы):
@@ -64,9 +66,40 @@ class Human:
         self.name = name
         self.hung_level = 50
         self.home = home
+        self.food = 0
+        self.money = 20
+
+    def work(self):
+        '''работать(− сытость, + деньги)'''
+        if self.hung_level>10:
+            self.money+=10
+            self.hung_level-=10
+            return 'Поработали, заработали денег'
+        else:
+            return 'Слишком голоден, чтоб работать'
+
+
+
+    def feed(self):
+        ''' есть(+ сытость, − еда)'''
+        if self.food<10:
+            return 'Не хватает еды'
+        else:
+            if self.hung_level<100:
+                self.hung_level+=10
+                self.food -= 10
+                return f' Сытость увеличена до {self.hung_level} количество еды снижено до {self.food}'
+
+    def by_food(self):
+        """ ходить в магазин за едой(+ еда, − деньги)"""
+        if self.money>10:
+            self.food+=10
+            self.money-=10
+            return "Потратили денег, купили еды"
+
 
     def __str__(self):
-        return f'{self.name=} {self.hung_level=} {self.home.__str__()}'
+        return f'{self.name=} {self.hung_level=} {self.money=} {self.food=} {self.home.__str__()}'
 
 class Home:
     '''
@@ -83,7 +116,39 @@ class Home:
     def __str__(self):
         return f' Дом №{self.id}'
 
+def gen_move():
+    num = randint(1,6)
+    match num:
+        case 1:
+            print ('Генерируется число кубика от 1 до 6.')
+        case 2:
+            print ('Если сытость < 20, то нужно поесть.')
+        case 3:
+            print ('Иначе, если еды в доме < 10, то сходить в магазин.')
+        case 4:
+            print ('Иначе, если денег в доме < 50, то работать.')
+        case 5:
+            print ('Иначе, если кубик равен 1, то работать.')
+        case 6:
+            print ('Иначе, если кубик равен 2, то поесть.')
+        case _: print('ошибка генерации')
+
+    return num
+
+
 home1 = Home()
 hum1 = Human('Иван',home1)
+print(hum1.by_food())
+print(hum1.__str__())
+print(hum1.feed())
+print(hum1.feed())
+print(hum1.__str__())
+print(hum1.work())
+print(hum1.work())
+print(hum1.__str__())
+moveset =set()
+for _ in range(150):
+    moveset.add(gen_move())
+print (moveset)
 
-print (hum1)
+
